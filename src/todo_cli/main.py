@@ -78,6 +78,12 @@ def main():
         action="store_true",
         help="Show detailed task information like creation date and time"
     )
+    list_parser.add_argument(
+    "--search",
+    type=str,
+    help="Search tasks by keyword in text"
+    )
+
 
 
     # === complete command ===
@@ -180,6 +186,11 @@ This is a simple and minimalist command-line todo manager.
                 if requested_tags & task_tags:
                     filtered_tasks.append(t)
             tasks = filtered_tasks
+        
+        # Search by keyword
+        if args.search:
+            keyword = args.search.lower()
+            tasks = [t for t in tasks if keyword in t["text"].lower()]
 
         # If no tasks match the filters, show a message
         if not tasks:
