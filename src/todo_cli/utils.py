@@ -6,6 +6,15 @@
 from typing import List
 from .core import TaskDict
 
+# ANSI color codes for priority display
+PRIORITY_COLORS = {
+    "high": "\033[91m",     # red
+    "medium": "\033[93m",   # yellow
+    "low": "\033[0m",       # default
+}
+RESET = "\033[0m"
+
+
 # -------------------------------
 # 🎨 Message display utility
 # -------------------------------
@@ -45,12 +54,14 @@ def format_task_table(tasks: List[TaskDict], verbose: bool = False) -> str:
     rows: List[List[str]] = []
     for task in tasks:
         done = "✓" if task["done"] else "✗"
+        priority = task["priority"]
+        colored_priority = f"{PRIORITY_COLORS.get(priority, '')}{priority}{RESET}"
         row: List[str] = [
             str(task["id"]),
             done,
-            task["priority"],
+            colored_priority,
             task["text"],
-            task.get("due") or ""  # Use empty string if 'due' is not set
+            task.get("due") or ""
         ]
         if verbose:
             row.append(task.get("created", ""))  # fallback for retrocompatibility
