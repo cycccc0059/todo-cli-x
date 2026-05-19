@@ -12,6 +12,14 @@ from . import core
 from .utils import print_message, format_task_table, print_task_summary
 from . import __version__
 
+
+def parse_tags(tags_str: str | None) -> list[str] | None:
+    """将逗号分隔的 tags 字符串拆成列表。"""
+    if not tags_str:
+        return None
+    return [t.strip() for t in tags_str.split(",") if t.strip()]
+
+
 # ----------------------------------------
 # 📝 Main function to handle CLI commands
 # ----------------------------------------
@@ -132,7 +140,7 @@ This is a simple and minimalist command-line todo manager.
 
     # Add command handling
     if args.command == "add":
-        tags = [t.strip() for t in args.tags.split(",")] if args.tags else []
+        tags = parse_tags(args.tags) or []
         task = core.add_task(args.text, priority=args.priority, due=args.due, tags=tags)
         if task:
             meta_parts = [f"priority: {task['priority']}"]
@@ -224,7 +232,7 @@ This is a simple and minimalist command-line todo manager.
     # Edit command handling
     elif args.command == "edit":
         # Parse tags cleanly if provided
-        tags = [t.strip() for t in args.tags.split(",") if t.strip()] if args.tags else None
+        tags = parse_tags(args.tags)
 
         try:
             updated = core.edit_task(
